@@ -50305,8 +50305,9 @@ Diplan ‘Mechyards (destroyed 2837)
 General Dynamics
 Wunderland Enterprises</desc>
 	</planet>
-	<spacestation>
+	<planet>
 		<name>Transfer Station P3</name>
+        <type>spacestation</type>
 		<xcood>-112.322</xcood>
 		<ycood>884.953</ycood>
 		<faction>UND</faction>
@@ -50326,9 +50327,10 @@ Wunderland Enterprises</desc>
 		<subtype>2</subtype>
 		<luminosity>V</luminosity>
         <desc></desc>
-	</spacestation>
-	<spacestation>
+	</planet>
+	<planet>
 		<name>Transfer Station P9</name>
+        <type>spacestation</type>
 		<xcood>-115.35</xcood>
 		<ycood>1036.844</ycood>
 		<faction>UND</faction>
@@ -50348,7 +50350,7 @@ Wunderland Enterprises</desc>
 		<subtype>3</subtype>
 		<luminosity>II</luminosity>
         <desc></desc>
-	</spacestation>
+	</planet>
 	<planet>
 		<name>Pain (Dijonne 3050-)</name>
 		<xcood>-408.667</xcood>
@@ -62182,8 +62184,9 @@ Tengo Aerospace</desc>
 			<faction>DC</faction>
 		</factionChange>
 	</planet>
-	<asteroidfield>
+	<planet>
 		<name>Star's End (Novo Cressidas)</name>
+        <type>asteroidfield</type>
 		<xcood>-83.244</xcood>
 		<ycood>432.154</ycood>
 		<faction>UND</faction>
@@ -62233,7 +62236,7 @@ Tengo Aerospace</desc>
 		<socioIndustrial>A-B-D-C-F</socioIndustrial>
 		<hpg>A</hpg>
 		<desc>Star’s End is an inhospitable asteroid field that was originally settled by miners looking to tap into the rich sources of germanium and other precious metals that were scattered throughout the asteroids. Ownership of these rich sources of rare metals was hotly contested in the early days of the Rim World Republic and Lyran Commonwealth but ultimately the Republic ended up in control.</desc>
-	</asteroidfield>
+	</planet>
 	<planet>
 		<name>Steeles</name>
 		<xcood>291.563</xcood>
@@ -66489,8 +66492,9 @@ Timbuktu has been a staging ground used by the Lyran Commonwealth to coordinate 
 			<faction>FS</faction>
 		</factionChange>
 	</planet>
-	<spacestation>
+	<planet>
 		<name>Transfer Station J239H2</name>
+        <type>spacestation</type>
 		<xcood>-168.871</xcood>
 		<ycood>611.727</ycood>
 		<faction>UND</faction>
@@ -66506,7 +66510,7 @@ Timbuktu has been a staging ground used by the Lyran Commonwealth to coordinate 
 		<subtype>7</subtype>
 		<luminosity>V</luminosity>
         <desc></desc>
-	</spacestation>
+	</planet>
 	<planet>
 		<name>Toffen</name>
 		<xcood>41.613</xcood>
@@ -74807,8 +74811,9 @@ Tanis is the 2nd planet in the Tanis system and despite relatively low gravity (
 
 Alexandra is the 3rd planet in the Tanis system and is relatively temperate, though on the cold side with an equitorial temperature of 22 degrees centigrade. The primary terrain features on Alexandra are mountains and badlands.</desc>
 	</planet>
-	<spacestation>
+	<planet>
 		<name>Dark Nebula</name>
+        <type>spacestation</type>
 		<xcood>-137.44</xcood>
 		<ycood>424.06</ycood>
 		<faction>RWR</faction>
@@ -74838,7 +74843,7 @@ Alexandra is the 3rd planet in the Tanis system and is relatively temperate, tho
 		<sysPos>15</sysPos>
 		<socioIndustrial>B-C-D-D-F</socioIndustrial>
 		<desc>The Dark Nebula Waystation was created as a logistical point for the invading Clans just outside of the Inner Sphere and has traded hands multiple times between the 3050s and 3070s, with multiple attempts made to destroy the station outright. However, the immense size of the station prevented its complete destruction, but eventually all functions beyond using the Dark Nebula as a stopover and possibly storage, were lost.</desc>
-	</spacestation>
+	</planet>
 	<planet>
 		<name>Independence</name>
 		<xcood>58.656</xcood>
@@ -75214,14 +75219,12 @@ However, the Devil's Brigade had one striking success: they found the ancient st
 			<faction>IE</faction>
 		</factionChange>
 	</planet>
-	<spacestation>
+	<planet>
 		<name>Rest Stop</name>
+        <type>spacestation</type>
 		<xcood>801.106</xcood>
 		<ycood>326.716</ycood>
 		<faction>UND</faction>
-		<pressure>0</pressure>
-		<gravity>0.00</gravity>
-		<percentWater>0</percentWater>
 		<spectralClass>M</spectralClass>
 		<subtype>9</subtype>
 		<luminosity>III</luminosity>
@@ -75237,8 +75240,7 @@ However, the Devil's Brigade had one striking success: they found the ancient st
 			<date>3025-01-01</date>
 			<faction>IE</faction>
 		</factionChange>
-        <desc></desc>
-	</spacestation>
+	</planet>
 	<planet>
 		<name>New Delphi</name>
 		<xcood>971.739</xcood>
@@ -88032,8 +88034,9 @@ While the air was still breathable, the planet is locked in ice and uninhabited 
 			<faction>ABN</faction>
 		</factionChange>
 	</planet>
-	<spacestation>
+	<planet>
 		<name>Transfer Facility 4</name>
+        <type>spacestation</type>
 		<xcood>293.091</xcood>
 		<ycood>668.481</ycood>
 		<faction>UND</faction>
@@ -88055,7 +88058,7 @@ While the air was still breathable, the planet is locked in ice and uninhabited 
 		</factionChange>
 		<spectralType>M4II</spectralType>
         <desc></desc>
-	</spacestation>
+	</planet>
 	<planet>
 		<name>Traussin</name>
 		<xcood>358.271</xcood>
@@ -88927,8 +88930,9 @@ After its fall, humans continued to live on Tyrfing at a basic hunter-gatherer l
 			<faction>ABN</faction>
 		</factionChange>
 	</planet>
-	<spacestation>
+	<planet>
 		<name>Wolf Orbital 82</name>
+        <type>spacestation</type>
 		<xcood>-103.771</xcood>
 		<ycood>683.278</ycood>
 		<faction>UND</faction>
@@ -88946,7 +88950,7 @@ After its fall, humans continued to live on Tyrfing at a basic hunter-gatherer l
 		</factionChange>
 		<spectralType>G6IV</spectralType>
         <desc></desc>
-	</spacestation>
+	</planet>
 	<planet>
 		<name>Wonju</name>
 		<xcood>266.75</xcood>

@@ -72,6 +72,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Info.vb" />
     <Compile Include="NameTable.vb" />
     <Compile Include="Planets.vb">
       <SubType>planets</SubType>
@@ -124,11 +125,7 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Primary Stats\" />
-    <Folder Include="Names\" />
-    <Folder Include="Planets\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="PlanetsXML.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

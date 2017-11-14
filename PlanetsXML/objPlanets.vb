@@ -19,7 +19,9 @@ Class objPlanets
     Private Sub serialPlanets()
 
         Dim serial As New XmlSerializer(GetType(Planets))
+        Dim infoserial As New XmlSerializer(GetType(Info.Planet))
         Dim p As New Planets
+        Dim info As New Info
         Dim reader As XmlReader = XmlReader.Create(My.Application.Info.DirectoryPath & "\Planets\planetsTemplate.xml")
         While reader.Read()
 
@@ -27,8 +29,21 @@ Class objPlanets
 
         End While
         reader.Close()
+        Dim Wsettings As XmlWriterSettings = New XmlWriterSettings()
+        Wsettings.Indent = True
+        Wsettings.IndentChars = (ControlChars.Tab)
+        Wsettings.ConformanceLevel = ConformanceLevel.Document
+        Wsettings.WriteEndDocumentOnClose = True
+        Dim iterator As Integer = 0
 
         For Each planet In p.planet()
+
+            iterator += 1
+            Dim filepath As String
+            Dim iPlanet As New Info.Planet
+            iPlanet.id = planet.name()
+            filepath = "\Planets\" & String.Format("{0:0000}", iterator) & "_" & iPlanet.id() & ".xml"
+            Console.WriteLine(filepath)
             'If planet already has lore
             If String.IsNullOrEmpty(planet.desc()) = False Then
                 Console.WriteLine(planet.name() & " has lore")
@@ -111,6 +126,8 @@ Class objPlanets
                 planet.density = 5.502487061 'g per cubic centimeter
                 planet.escapeV = 1.12 * (10 ^ 4) 'km per second
 
+            ElseIf planet.type() = "spacestation" Then
+
             ElseIf planet.gravity() Is Nothing Then
 
                 planet.diameter = getDiameter()
@@ -131,10 +148,18 @@ Class objPlanets
                 Console.WriteLine(planet.name() & " Gravity= " & planet.gravity())
 
             Else
-
+                iPlanet.mass = planet.pMass()
+                iPlanet.radius = (planet.diameter() / 2) / (6.378 * (10 ^ 6)) 'radius compared to Earth
+                iPlanet.density = planet.density() * (10 ^ 3) 'g per cubic meter
             End If
             'Determine a planet's pressure
-            If planet.pressure() Is Nothing AndAlso planet.lore() = False Then
+            If planet.type() = "spacestation" Then
+
+            ElseIf Planet.type() = "asteroidfield" Then
+
+                planet.pressure = 0
+
+            ElseIf planet.pressure() Is Nothing AndAlso planet.lore() = False Then
 
                 planet.pressure = getPressure(planet)
                 Console.WriteLine(planet.name() & " Atmosphere= " & planet.pressure() & " generated")
@@ -146,6 +171,7 @@ Class objPlanets
             Else
                 Console.WriteLine(planet.name() & " Atmosphere= " & planet.pressure())
             End If
+            iPlanet.pressureAtm = planet.pressure() / 3
             'Determine system position based on atmosphere
             If planet.sysPos() Is Nothing Then
 
@@ -161,7 +187,9 @@ Class objPlanets
                 Console.WriteLine(planet.name() & " SysPos= " & planet.sysPos())
             End If
             'Determine planet's temp from system position and atmosphere
-            If planet.temperature() Is Nothing Then
+            If planet.type() = "spacestation" Then
+
+            ElseIf planet.temperature() Is Nothing Then
 
                 planet.temperature = getTemp(planet)
                 Console.WriteLine(planet.name() & " Temp= " & planet.temperature() & " generated")
@@ -170,7 +198,9 @@ Class objPlanets
                 Console.WriteLine(planet.name() & " Temp= " & planet.temperature())
             End If
             'Determine planet's highest life form
-            If planet.lifeForm() Is Nothing AndAlso planet.pressure() >= 2 Then
+            If planet.type() = "spacestation" OrElse planet.type() = "asteroidfield" Then
+
+            ElseIf planet.lifeForm() Is Nothing AndAlso planet.pressure() >= 2 Then
 
                 planet.lifeForm = getLF(planet)
                 Console.WriteLine(planet.name() & " life form= " & planet.lifeForm() & " generated")
@@ -184,7 +214,9 @@ Class objPlanets
                 Console.WriteLine(planet.name() & " life form= " & planet.lifeForm())
             End If
             'Determine planet's percent water coverage
-            If planet.percentWater() Is Nothing AndAlso planet.pressure() >= 2 Then
+            If planet.type() = "spacestation" Then
+
+            ElseIf planet.percentWater() Is Nothing AndAlso planet.pressure() >= 2 Then
 
                 planet.percentWater = getPW(planet)
                 Console.WriteLine(planet.name() & " percent water= " & planet.percentWater() & " generated")
@@ -197,7 +229,9 @@ Class objPlanets
                 Console.WriteLine(planet.name() & " percent water= " & planet.percentWater())
             End If
             'Determine planet's climate off temperature
-            If String.IsNullOrEmpty(planet.climate()) = True Then
+            If planet.type() = "spacestation" OrElse planet.type() = "asteroidfield" Then
+
+            ElseIf String.IsNullOrEmpty(planet.climate()) = True Then
 
                 planet.climate = getClimate(planet)
                 Console.WriteLine(planet.name() & " climate= " & planet.climate() & " generated")
@@ -206,7 +240,9 @@ Class objPlanets
                 Console.WriteLine(planet.name() & " climate= " & planet.climate())
             End If
             'Determine if axis tilt is enough to cause seasons
-            If String.IsNullOrEmpty(planet.axis()) = True Then
+            If planet.type() = "spacestation" OrElse planet.type() = "asteroidfield" Then
+
+            ElseIf String.IsNullOrEmpty(planet.axis()) = True Then
 
                 planet.axis = getAxis()
                 Console.WriteLine(planet.name() & " Axis= " & planet.axis() & " generated")
@@ -215,7 +251,9 @@ Class objPlanets
 
             End If
             'Determine if elliptical orbit is enough to cause seasons
-            If String.IsNullOrEmpty(planet.orbit()) = True Then
+            If planet.type() = "spacestation" OrElse planet.type() = "asteroidfield" Then
+
+            ElseIf String.IsNullOrEmpty(planet.orbit()) = True Then
 
                 planet.orbit = getOrbit()
                 Console.WriteLine(planet.name() & " Orbit= " & planet.orbit() & " generated")
@@ -224,7 +262,9 @@ Class objPlanets
 
             End If
             'Determine planet's moons / rings
-            If planet.satellite() Is Nothing AndAlso planet.landMass() IsNot Nothing Then
+            If planet.type() = "spacestation" OrElse planet.type() = "asteroidfield" Then
+
+            ElseIf planet.satellite() Is Nothing AndAlso planet.landMass() IsNot Nothing Then
 
             ElseIf planet.satellite() Is Nothing Then
 
@@ -234,7 +274,13 @@ Class objPlanets
                     For i = 0 To (s - 1)
 
                         ReDim Preserve planet.satellite(i + 1)
-                        planet.satellite(i) = getMoonsName(planet)
+                        Dim name As String = getMoonsName(planet)
+                        While planet.satellite().Contains(name) = True
+
+                            name = getMoonsName(planet)
+
+                        End While
+                        planet.satellite(i) = name
                         Console.WriteLine(planet.name() & " satellite= " & planet.satellite(i) & " generated")
 
                     Next
@@ -247,7 +293,13 @@ Class objPlanets
                     For i = 1 To (s)
 
                         ReDim Preserve planet.satellite(i + 1)
-                        planet.satellite(i) = getMoonsName(planet)
+                        Dim name As String = getMoonsName(planet)
+                        While planet.satellite().Contains(name) = True
+
+                            name = getMoonsName(planet)
+
+                        End While
+                        planet.satellite(i) = name
                         Console.WriteLine(planet.name() & " satellite= " & planet.satellite(i) & " generated")
 
                     Next
@@ -260,7 +312,9 @@ Class objPlanets
                 Console.WriteLine(planet.name() & " satellite(s) already defined")
             End If
             'Determine planet's land masses
-            If planet.landMass() Is Nothing Then
+            If planet.type() = "spacestation" OrElse planet.type() = "asteroidfield" Then
+
+            ElseIf planet.landMass() Is Nothing Then
 
                 Dim lm As Integer = getLM(planet)
                 If lm > 0 Then
@@ -268,7 +322,13 @@ Class objPlanets
                     For i = 0 To (lm - 1)
 
                         ReDim Preserve planet.landMass(i + 1)
-                        planet.landMass(i) = getLMName(planet)
+                        Dim name As String = getLMName(planet)
+                        While planet.landMass().Contains(name) = True
+
+                            name = getLMName(planet)
+
+                        End While
+                        planet.landMass(i) = name
                         Console.WriteLine(planet.name() & " land mass= " & planet.landMass(i) & " generated")
 
                     Next
@@ -309,7 +369,9 @@ Class objPlanets
 
             End If
             'Determine a planet's special features & occupancy
-            If planet.lore() = True Then
+            If planet.type() = "spacestation" Then
+
+            ElseIf planet.lore() = True Then
 
             Else
 
@@ -394,10 +456,78 @@ Class objPlanets
                 Dim ad As String = getAdesc(planet)
                 Dim de As String = planet.desc()
 
-                planet.desc = "<p>" & planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & ax & "," & ob & "," & ac & ", and has a population of " & String.Format("{0:n0}", po) & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.</p>" _
-                    & Environment.NewLine() & Environment.NewLine & "<p>" & de & "</p>"
+                planet.desc = planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & "." _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & ax & "," & ob & "," & ac & ", and has a population of " & String.Format("{0:n0}", po) & "." _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world." _
+                    & Environment.NewLine & Environment.NewLine & de
+
+            ElseIf planet.type() = "spacestation" AndAlso planet.lore() = False Then
+
+                Dim po As Long = planet.population()
+                Dim td As String = getTdesc(planet)
+                Dim dd As String = getDdesc(planet)
+                Dim md As String = getMdesc(planet)
+                Dim od As String = getOdesc(planet)
+
+                planet.desc = planet.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " space station," & dd & "," & md & ", and" & od & ".(Non-Canon)"
+
+            ElseIf planet.type() = "spacestation" AndAlso planet.lore() = True Then
+
+                Dim po As Long = planet.population()
+                Dim td As String = getTdesc(planet)
+                Dim dd As String = getDdesc(planet)
+                Dim md As String = getMdesc(planet)
+                Dim od As String = getOdesc(planet)
+                Dim de As String = planet.desc()
+
+                planet.desc = planet.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " space station," & dd & "," & md & ", and" & od & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & de
+
+            ElseIf planet.type() = "asteroidfield" AndAlso String.IsNullOrEmpty(planet.SF()) = True AndAlso planet.lore() = False Then
+
+                Dim po As Long = planet.population()
+                Dim td As String = getTdesc(planet)
+                Dim dd As String = getDdesc(planet)
+                Dim md As String = getMdesc(planet)
+                Dim od As String = getOdesc(planet)
+
+                planet.desc = planet.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".(Non-Canon)"
+
+            ElseIf planet.type() = "asteroidfield" AndAlso String.IsNullOrEmpty(planet.SF()) = True AndAlso planet.lore() = True Then
+
+                Dim po As Long = planet.population()
+                Dim td As String = getTdesc(planet)
+                Dim dd As String = getDdesc(planet)
+                Dim md As String = getMdesc(planet)
+                Dim od As String = getOdesc(planet)
+                Dim de As String = planet.desc()
+
+                planet.desc = planet.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".(Non-Canon)" _
+                        & Environment.NewLine & Environment.NewLine & de
+
+            ElseIf planet.type() = "asteroidfield" AndAlso String.IsNullOrEmpty(planet.SF()) = False AndAlso planet.lore() = False Then
+
+                Dim sf As String = planet.SF()
+                Dim po As Long = planet.population()
+                Dim td As String = getTdesc(planet)
+                Dim dd As String = getDdesc(planet)
+                Dim md As String = getMdesc(planet)
+                Dim od As String = getOdesc(planet)
+
+                planet.desc = planet.name() & " has a population of " & String.Format("{0:n0}", po) & "," & sf & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".(Non-Canon)"
+
+            ElseIf planet.type() = "asteroidfield" AndAlso String.IsNullOrEmpty(planet.SF()) = False AndAlso planet.lore() = True Then
+
+                Dim sf As String = planet.SF()
+                Dim po As Long = planet.population()
+                Dim td As String = getTdesc(planet)
+                Dim dd As String = getDdesc(planet)
+                Dim md As String = getMdesc(planet)
+                Dim od As String = getOdesc(planet)
+                Dim de As String = planet.desc()
+
+                planet.desc = planet.name() & " has a population of " & String.Format("{0:n0}", po) & "," & sf & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & de
 
             ElseIf String.IsNullOrEmpty(planet.SF()) = True AndAlso planet.lore() = False Then
 
@@ -418,9 +548,9 @@ Class objPlanets
                 Dim od As String = getOdesc(planet)
                 Dim ad As String = getAdesc(planet)
 
-                planet.desc = "<p>" & planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & ax & "," & ob & "," & ac & ", and has a population of " & String.Format("{0:n0}", po) & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.</p>"
+                planet.desc = planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & ax & "," & ob & "," & ac & ", and has a population of " & String.Format("{0:n0}", po) & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.(Non-Canon)"
 
             ElseIf String.IsNullOrEmpty(planet.SF()) = True AndAlso planet.lore() = True Then
 
@@ -442,10 +572,10 @@ Class objPlanets
                 Dim ad As String = getAdesc(planet)
                 Dim de As String = planet.desc()
 
-                planet.desc = "<p>" & planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & ax & "," & ob & "," & ac & ", and has a population of " & String.Format("{0:n0}", po) & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.</p>" _
-                    & Environment.NewLine() & Environment.NewLine & "<p>" & de & "</p>"
+                planet.desc = planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & ax & "," & ob & "," & ac & ", and has a population of " & String.Format("{0:n0}", po) & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & de
 
             ElseIf String.IsNullOrEmpty(planet.SF()) = False AndAlso planet.lore() = False Then
 
@@ -467,9 +597,9 @@ Class objPlanets
                 Dim ad As String = getAdesc(planet)
                 Dim po As Long = planet.population()
 
-                planet.desc = "<p>" & planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & ax & "," & ob & "," & ac & "," & sf & ", and has a population of " & String.Format("{0:n0}", po) & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.</p>"
+                planet.desc = planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & ax & "," & ob & "," & ac & "," & sf & ", and has a population of " & String.Format("{0:n0}", po) & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.(Non-Canon)"
 
             Else
 
@@ -492,477 +622,27 @@ Class objPlanets
                 Dim ad As String = getAdesc(planet)
                 Dim de As String = planet.desc()
 
-                planet.desc = "<p>" & planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & ax & "," & ob & "," & ac & "," & sf & ", and has a population of " & String.Format("{0:n0}", po) & ".</p>" _
-                    & Environment.NewLine & "<p>" & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.</p>" _
-                    & Environment.NewLine & Environment.NewLine & "<p>" & de & "</p>"
+                planet.desc = planet.name() & " has a diameter of " & String.Format("{0:n0}", (di / 1000)) & "km(" & String.Format("{0:n2}", di / sdi) & " of standard), has a density of " & String.Format("{0:n3}", dn) & "g/cm3(" & String.Format("{0:n2}", dn / sdn) & " of standard), and has an escape velocity of " & String.Format("{0:n3}", (ev / 1000)) & "km/s" & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & ax & "," & ob & "," & ac & "," & sf & ", and has a population of " & String.Format("{0:n0}", po) & ".(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & planet.name() & td & " world," & dd & "," & md & "," & od & ", and" & ad & " world.(Non-Canon)" _
+                    & Environment.NewLine & Environment.NewLine & de
 
             End If
 
             Application.DoEvents()
+            Dim infowriter As XmlWriter = XmlWriter.Create(My.Application.Info.DirectoryPath & filepath, Wsettings)
+            infoserial.Serialize(infowriter, iPlanet)
+            infowriter.Flush()
+            infowriter.Close()
 
         Next
 
-        For Each spacestation In p.spacestation()
-            'If spacestation already has lore
-            If String.IsNullOrEmpty(spacestation.desc()) = False Then
-                Console.WriteLine(spacestation.name() & " has lore")
-                spacestation.lore = True
-
-            Else
-                Console.WriteLine(spacestation.name() & " does not have lore")
-                spacestation.lore = False
-
-            End If
-            'If class empty but type is not
-            If String.IsNullOrEmpty(spacestation.spectralClass()) = True AndAlso String.IsNullOrEmpty(spacestation.spectralType()) = False Then
-
-                spacestation.spectralClass = spacestation.spectralType().Substring(0, 1)
-                Console.WriteLine(spacestation.name() & " star class= " & spacestation.spectralClass() & " type was defined")
-
-            Else
-
-            End If
-            'If class and type are empty
-            If String.IsNullOrEmpty(spacestation.spectralClass()) = True AndAlso String.IsNullOrEmpty(spacestation.spectralType()) = True Then
-
-                spacestation.spectralClass = getSC()
-                Console.WriteLine(spacestation.name() & " star class= " & spacestation.spectralClass() & " generated")
-
-            Else
-                Console.WriteLine(spacestation.name() & " star class= " & spacestation.spectralClass())
-            End If
-            'If subtype is empty but type is not
-            If (spacestation.subtype() Is Nothing) AndAlso String.IsNullOrEmpty(spacestation.spectralType()) = False Then
-
-                spacestation.subtype = spacestation.spectralType().Substring(1, 1)
-                Console.WriteLine(spacestation.name() & " star subtype= " & spacestation.subtype() & " type was defined")
-
-            Else
-
-            End If
-            'If subtype and type are empty
-            If (spacestation.subtype() Is Nothing) AndAlso String.IsNullOrEmpty(spacestation.spectralType()) = True Then
-
-                spacestation.subtype = getST()
-                Console.WriteLine(spacestation.name() & " star subtype= " & spacestation.subtype() & " generated")
-
-            Else
-                Console.WriteLine(spacestation.name() & " star subtype= " & spacestation.subtype())
-            End If
-            'If luminosity is empty but type is not
-            If String.IsNullOrEmpty(spacestation.luminosity()) = True AndAlso String.IsNullOrEmpty(spacestation.spectralType()) = False Then
-
-                spacestation.luminosity = spacestation.spectralType().Substring(2, 2)
-                Console.WriteLine(spacestation.name() & " star luminosity= " & spacestation.luminosity() & " type was defined")
-
-            Else
-
-            End If
-            'If luminosity and type are empty
-            If String.IsNullOrEmpty(spacestation.luminosity()) = True AndAlso String.IsNullOrEmpty(spacestation.spectralType()) = True Then
-
-                spacestation.luminosity = getL(spacestation)
-                Console.WriteLine(spacestation.name() & " star luminosity= " & spacestation.luminosity() & " generated")
-
-            Else
-                Console.WriteLine(spacestation.name() & " star luminosity= " & spacestation.luminosity())
-            End If
-            'If type is empty
-            If String.IsNullOrEmpty(spacestation.spectralType()) = True Then
-
-                spacestation.spectralType = spacestation.spectralClass() & spacestation.subtype() & spacestation.luminosity()
-                Console.WriteLine(spacestation.name() & " star type= " & spacestation.spectralType() & " generated")
-
-            Else
-                Console.WriteLine(spacestation.name() & " star type= " & spacestation.spectralType())
-            End If
-            'Determine system position based on atmosphere
-            If spacestation.sysPos() Is Nothing Then
-
-                spacestation.sysPos = getSP(spacestation)
-                Console.WriteLine(spacestation.name() & " SysPos= " & spacestation.sysPos() & " generated")
-
-            Else
-                Console.WriteLine(spacestation.name() & " SysPos= " & spacestation.sysPos())
-            End If
-            'If faction is empty then it's undiscovered
-            If String.IsNullOrEmpty(spacestation.faction()) = True Then
-
-                spacestation.faction = "UND"
-                Console.WriteLine(spacestation.name() & " Faction= " & spacestation.faction() & " generated")
-
-            Else
-
-            End If
-            'Determine a spacestation's population
-            spacestation.population = getPop(spacestation)
-            Console.WriteLine(spacestation.name() & " initial population= " & String.Format("{0:n0}", spacestation.population()) & " generated")
-            spacestation.population = getPopMod(spacestation)
-            Console.WriteLine(spacestation.name() & " modified population= " & String.Format("{0:n0}", spacestation.population()) & " generated")
-            'Determine a spacestation's USILR scores and codes
-            If String.IsNullOrEmpty(spacestation.socioIndustrial()) = True Then
-
-                spacestation.tech = getTech(spacestation)
-                Console.WriteLine(spacestation.name() & " tech score= " & spacestation.tech() & " generated")
-                spacestation.development = getDev(spacestation)
-                Console.WriteLine(spacestation.name() & " development score= " & spacestation.development() & " generated")
-                spacestation.output = getOutput(spacestation)
-                Console.WriteLine(spacestation.name() & " output score= " & spacestation.output() & " generated")
-                spacestation.material = getMaterial(spacestation)
-                Console.WriteLine(spacestation.name() & " material score= " & spacestation.material() & " generated")
-                spacestation.agricultural = getAgricultural(spacestation)
-                Console.WriteLine(spacestation.name() & " agricultural score= " & spacestation.agricultural() & " generated")
-                spacestation.socioIndustrial = getUSILR(spacestation.tech()) & "-" & getUSILR(spacestation.development()) & "-" & getUSILR(spacestation.material()) & "-" _
-                    & getUSILR(spacestation.output()) & "-" & getUSILR(spacestation.agricultural())
-                Console.WriteLine(spacestation.name() & " USILR= " & spacestation.socioIndustrial() & " generated")
-
-            ElseIf String.IsNullOrEmpty(spacestation.socioIndustrial()) = False Then
-
-                Dim tcode As String = spacestation.socioIndustrial().Substring(0, 1)
-                Dim tscore As Integer = getScore(tcode)
-                Dim dcode As String = spacestation.socioIndustrial().Substring(2, 1)
-                Dim dscore As Integer = getScore(dcode)
-                Dim ocode As String = spacestation.socioIndustrial().Substring(4, 1)
-                Dim oscore As Integer = getScore(ocode)
-                Dim mcode As String = spacestation.socioIndustrial().Substring(6, 1)
-                Dim mscore As Integer = getScore(mcode)
-                Dim acode As String = spacestation.socioIndustrial().Substring(8, 1)
-                Dim ascore As Integer = getScore(acode)
-                spacestation.tech = tscore
-                Console.WriteLine(spacestation.name() & " tech score= " & spacestation.tech() & " generated")
-                spacestation.development = dscore
-                Console.WriteLine(spacestation.name() & " development score= " & spacestation.development() & " generated")
-                spacestation.output = oscore
-                Console.WriteLine(spacestation.name() & " output score= " & spacestation.output() & " generated")
-                spacestation.material = mscore
-                Console.WriteLine(spacestation.name() & " material score= " & spacestation.material() & " generated")
-                spacestation.agricultural = ascore
-                Console.WriteLine(spacestation.name() & " agricultural score= " & spacestation.agricultural() & " generated")
-
-            End If
-            'Populate spacestation's description
-            If spacestation.lore() = False Then
-
-                Dim po As Long = spacestation.population()
-                Dim td As String = getTdesc(spacestation)
-                Dim dd As String = getDdesc(spacestation)
-                Dim md As String = getMdesc(spacestation)
-                Dim od As String = getOdesc(spacestation)
-
-                spacestation.desc = "<p>" & spacestation.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " space station," & dd & "," & md & ", and" & od & ".</p>"
-
-            ElseIf spacestation.lore() = True Then
-
-                Dim po As Long = spacestation.population()
-                Dim td As String = getTdesc(spacestation)
-                Dim dd As String = getDdesc(spacestation)
-                Dim md As String = getMdesc(spacestation)
-                Dim od As String = getOdesc(spacestation)
-                Dim de As String = spacestation.desc()
-
-                spacestation.desc = "<p>" & spacestation.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " space station," & dd & "," & md & ", and" & od & ".</p>" _
-                    & Environment.NewLine & Environment.NewLine & "<p>" & de & "</p>"
-
-            Else
-
-            End If
-            Application.DoEvents()
-
-        Next
-
-        For Each asteroidfield In p.asteroidfield()
-            'If asteroidfield already has lore
-            If String.IsNullOrEmpty(asteroidfield.desc()) = False Then
-                Console.WriteLine(asteroidfield.name() & " has lore")
-                asteroidfield.lore = True
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " does not have lore")
-                asteroidfield.lore = False
-
-            End If
-            'If class empty but type is not
-            If String.IsNullOrEmpty(asteroidfield.spectralClass()) = True AndAlso String.IsNullOrEmpty(asteroidfield.spectralType()) = False Then
-
-                asteroidfield.spectralClass = asteroidfield.spectralType().Substring(0, 1)
-                Console.WriteLine(asteroidfield.name() & " star class= " & asteroidfield.spectralClass() & " type was defined")
-
-            Else
-
-            End If
-            'If class and type are empty
-            If String.IsNullOrEmpty(asteroidfield.spectralClass()) = True AndAlso String.IsNullOrEmpty(asteroidfield.spectralType()) = True Then
-
-                asteroidfield.spectralClass = getSC()
-                Console.WriteLine(asteroidfield.name() & " star class= " & asteroidfield.spectralClass() & " generated")
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " star class= " & asteroidfield.spectralClass())
-            End If
-            'If subtype is empty but type is not
-            If (asteroidfield.subtype() Is Nothing) AndAlso String.IsNullOrEmpty(asteroidfield.spectralType()) = False Then
-
-                asteroidfield.subtype = asteroidfield.spectralType().Substring(1, 1)
-                Console.WriteLine(asteroidfield.name() & " star subtype= " & asteroidfield.subtype() & " type was defined")
-
-            Else
-
-            End If
-            'If subtype and type are empty
-            If (asteroidfield.subtype() Is Nothing) AndAlso String.IsNullOrEmpty(asteroidfield.spectralType()) = True Then
-
-                asteroidfield.subtype = getST()
-                Console.WriteLine(asteroidfield.name() & " star subtype= " & asteroidfield.subtype() & " generated")
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " star subtype= " & asteroidfield.subtype())
-            End If
-            'If luminosity is empty but type is not
-            If String.IsNullOrEmpty(asteroidfield.luminosity()) = True AndAlso String.IsNullOrEmpty(asteroidfield.spectralType()) = False Then
-
-                asteroidfield.luminosity = asteroidfield.spectralType().Substring(2, 2)
-                Console.WriteLine(asteroidfield.name() & " star luminosity= " & asteroidfield.luminosity() & " type was defined")
-
-            Else
-
-            End If
-            'If luminosity and type are empty
-            If String.IsNullOrEmpty(asteroidfield.luminosity()) = True AndAlso String.IsNullOrEmpty(asteroidfield.spectralType()) = True Then
-
-                asteroidfield.luminosity = getL(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " star luminosity= " & asteroidfield.luminosity() & " generated")
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " star luminosity= " & asteroidfield.luminosity())
-            End If
-            'If type is empty
-            If String.IsNullOrEmpty(asteroidfield.spectralType()) = True Then
-
-                asteroidfield.spectralType = asteroidfield.spectralClass() & asteroidfield.subtype() & asteroidfield.luminosity()
-                Console.WriteLine(asteroidfield.name() & " star type= " & asteroidfield.spectralType() & " generated")
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " star type= " & asteroidfield.spectralType())
-            End If
-            'Determine asteroidfield's diam, mass, escapeV, and gravity
-            If asteroidfield.gravity() Is Nothing Then
-
-                asteroidfield.diameter = getDiameter()
-                asteroidfield.pMass = getMass()
-                asteroidfield.volume = ((4 / 3) * Math.PI * ((asteroidfield.diameter() / 2) ^ 3)) * (10 ^ 6) 'cubic centimeters
-                asteroidfield.density = (asteroidfield.pMass() * (10 ^ 3)) / asteroidfield.volume() 'g per cubic centimeter
-                asteroidfield.escapeV = getEscapeV(asteroidfield)
-                asteroidfield.gravity = getGravity(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " Gravity= " & asteroidfield.gravity() & " generated")
-
-            ElseIf asteroidfield.gravity() IsNot Nothing Then
-
-                asteroidfield.pMass = getMass()
-                asteroidfield.diameter = Math.Sqrt((G * asteroidfield.pMass()) / (asteroidfield.gravity() * 9.81)) * 2
-                asteroidfield.volume = ((4 / 3) * Math.PI * ((asteroidfield.diameter() / 2) ^ 3)) * (10 ^ 6) 'cubic centimeters
-                asteroidfield.density = (asteroidfield.pMass() * (10 ^ 3)) / asteroidfield.volume() 'g per cubic centimeter
-                asteroidfield.escapeV = getEscapeV(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " Gravity= " & asteroidfield.gravity())
-
-            Else
-
-            End If
-            'Determine system position based on atmosphere
-            If asteroidfield.sysPos() Is Nothing Then
-
-                asteroidfield.sysPos = getSP(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " SysPos= " & asteroidfield.sysPos() & " generated")
-
-            ElseIf asteroidfield.sysPos() IsNot Nothing AndAlso asteroidfield.temperature() Is Nothing Then
-
-                asteroidfield.sysPos = getSP(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " SysPos= " & asteroidfield.sysPos() & " generated to find AU from star")
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " SysPos= " & asteroidfield.sysPos())
-            End If
-            'Determine asteroidfield's temp from system position and atmosphere
-            If asteroidfield.temperature() Is Nothing Then
-
-                asteroidfield.temperature = getTemp(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " Temp= " & asteroidfield.temperature() & " generated")
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " Temp= " & asteroidfield.temperature())
-            End If
-            'Determine asteroidfield's percent water coverage
-            If asteroidfield.percentWater() Is Nothing AndAlso asteroidfield.pressure() >= 2 Then
-
-                asteroidfield.percentWater = getPW(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " percent water= " & asteroidfield.percentWater() & " generated")
-
-            ElseIf asteroidfield.percentWater() Is Nothing AndAlso asteroidfield.pressure() < 2 Then
-                asteroidfield.percentWater = 0
-                Console.WriteLine(asteroidfield.name() & " percent water= " & asteroidfield.percentWater() & " generated")
-
-            Else
-                Console.WriteLine(asteroidfield.name() & " percent water= " & asteroidfield.percentWater())
-            End If
-            'If faction is empty then it's undiscovered
-            If String.IsNullOrEmpty(asteroidfield.faction()) = True Then
-
-                asteroidfield.faction = "UND"
-                Console.WriteLine(asteroidfield.name() & " Faction= " & asteroidfield.faction() & " generated")
-
-            Else
-
-            End If
-            'Determine asteroidfield's atmospheric composition
-            If asteroidfield.lore() = False AndAlso asteroidfield.pressure() >= 2 Then
-
-                asteroidfield.AC = getAC(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & asteroidfield.AC() & " generated")
-            ElseIf asteroidfield.lore() = False AndAlso asteroidfield.pressure() < 2 Then
-
-                asteroidfield.AC = " has none / a toxic atmosphere"
-                Console.WriteLine(asteroidfield.name() & asteroidfield.AC() & " generated")
-
-            ElseIf asteroidfield.lore() = True AndAlso asteroidfield.pressure() >= 2 Then
-
-                asteroidfield.AC = " has a breathable atmosphere"
-                Console.WriteLine(asteroidfield.name() & asteroidfield.AC() & " generated")
-            ElseIf asteroidfield.lore() = True AndAlso asteroidfield.pressure() < 2 Then
-
-                asteroidfield.AC = " has none / a toxic atmosphere"
-                Console.WriteLine(asteroidfield.name() & asteroidfield.AC() & " generated")
-            Else
-
-            End If
-            'Determine a asteroidfield's special features & occupancy
-            If asteroidfield.lore() = True Then
-
-            Else
-
-                Dim a As String = asteroidfield.AC()
-                Dim sf As String = getSF(asteroidfield)
-                asteroidfield.SF = sf
-                Console.WriteLine(asteroidfield.name() & asteroidfield.SF() & " generated")
-                If sf = " experiences intense volcanic activity" AndAlso a = " has a breathable atmosphere" Then
-                    asteroidfield.AC = " has a tainted atmosphere"
-                    Console.WriteLine(asteroidfield.name() & " volcanic activity changes atmosphere to tainted")
-
-                Else
-
-                End If
-
-            End If
-            'Determine a asteroidfield's population
-            asteroidfield.population = getPop(asteroidfield)
-            Console.WriteLine(asteroidfield.name() & " initial population= " & String.Format("{0:n0}", asteroidfield.population()) & " generated")
-            asteroidfield.population = getPopMod(asteroidfield)
-            Console.WriteLine(asteroidfield.name() & " modified population= " & String.Format("{0:n0}", asteroidfield.population()) & " generated")
-            'Determine a asteroidfield's USILR scores and codes
-            If String.IsNullOrEmpty(asteroidfield.socioIndustrial()) = True Then
-
-                asteroidfield.tech = getTech(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " tech score= " & asteroidfield.tech() & " generated")
-                asteroidfield.development = getDev(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " development score= " & asteroidfield.development() & " generated")
-                asteroidfield.output = getOutput(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " output score= " & asteroidfield.output() & " generated")
-                asteroidfield.material = getMaterial(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " material score= " & asteroidfield.material() & " generated")
-                asteroidfield.agricultural = getAgricultural(asteroidfield)
-                Console.WriteLine(asteroidfield.name() & " agricultural score= " & asteroidfield.agricultural() & " generated")
-                asteroidfield.socioIndustrial = getUSILR(asteroidfield.tech()) & "-" & getUSILR(asteroidfield.development()) & "-" & getUSILR(asteroidfield.material()) & "-" _
-                    & getUSILR(asteroidfield.output()) & "-" & getUSILR(asteroidfield.agricultural())
-                Console.WriteLine(asteroidfield.name() & " USILR= " & asteroidfield.socioIndustrial() & " generated")
-
-            ElseIf String.IsNullOrEmpty(asteroidfield.socioIndustrial()) = False Then
-
-                Dim tcode As String = asteroidfield.socioIndustrial().Substring(0, 1)
-                Dim tscore As Integer = getScore(tcode)
-                Dim dcode As String = asteroidfield.socioIndustrial().Substring(2, 1)
-                Dim dscore As Integer = getScore(dcode)
-                Dim ocode As String = asteroidfield.socioIndustrial().Substring(4, 1)
-                Dim oscore As Integer = getScore(ocode)
-                Dim mcode As String = asteroidfield.socioIndustrial().Substring(6, 1)
-                Dim mscore As Integer = getScore(mcode)
-                Dim acode As String = asteroidfield.socioIndustrial().Substring(8, 1)
-                Dim ascore As Integer = getScore(acode)
-                asteroidfield.tech = tscore
-                Console.WriteLine(asteroidfield.name() & " tech score= " & asteroidfield.tech() & " generated")
-                asteroidfield.development = dscore
-                Console.WriteLine(asteroidfield.name() & " development score= " & asteroidfield.development() & " generated")
-                asteroidfield.output = oscore
-                Console.WriteLine(asteroidfield.name() & " output score= " & asteroidfield.output() & " generated")
-                asteroidfield.material = mscore
-                Console.WriteLine(asteroidfield.name() & " material score= " & asteroidfield.material() & " generated")
-                asteroidfield.agricultural = ascore
-                Console.WriteLine(asteroidfield.name() & " agricultural score= " & asteroidfield.agricultural() & " generated")
-
-            End If
-            'Populate asteroidfield's description
-            If String.IsNullOrEmpty(asteroidfield.SF()) = True AndAlso asteroidfield.lore() = False Then
-
-                Dim po As Long = asteroidfield.population()
-                Dim td As String = getTdesc(asteroidfield)
-                Dim dd As String = getDdesc(asteroidfield)
-                Dim md As String = getMdesc(asteroidfield)
-                Dim od As String = getOdesc(asteroidfield)
-
-                asteroidfield.desc = "<p>" & asteroidfield.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".</p>"
-
-            ElseIf String.IsNullOrEmpty(asteroidfield.SF()) = True AndAlso asteroidfield.lore() = True Then
-
-                Dim po As Long = asteroidfield.population()
-                Dim td As String = getTdesc(asteroidfield)
-                Dim dd As String = getDdesc(asteroidfield)
-                Dim md As String = getMdesc(asteroidfield)
-                Dim od As String = getOdesc(asteroidfield)
-                Dim de As String = asteroidfield.desc()
-
-                asteroidfield.desc = "<p>" & asteroidfield.name() & " has a population of " & String.Format("{0:n0}", po) & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".</p>" _
-                    & Environment.NewLine & Environment.NewLine & "<p>" & de & "</p>"
-
-            ElseIf String.IsNullOrEmpty(asteroidfield.SF()) = False AndAlso asteroidfield.lore() = False Then
-
-                Dim sf As String = asteroidfield.SF()
-                Dim po As Long = asteroidfield.population()
-                Dim td As String = getTdesc(asteroidfield)
-                Dim dd As String = getDdesc(asteroidfield)
-                Dim md As String = getMdesc(asteroidfield)
-                Dim od As String = getOdesc(asteroidfield)
-
-                asteroidfield.desc = "<p>" & asteroidfield.name() & " has a population of " & String.Format("{0:n0}", po) & "," & sf & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".</p>"
-
-            Else
-
-                Dim sf As String = asteroidfield.SF()
-                Dim po As Long = asteroidfield.population()
-                Dim td As String = getTdesc(asteroidfield)
-                Dim dd As String = getDdesc(asteroidfield)
-                Dim md As String = getMdesc(asteroidfield)
-                Dim od As String = getOdesc(asteroidfield)
-                Dim de As String = asteroidfield.desc()
-
-                asteroidfield.desc = "<p>" & asteroidfield.name() & " has a population of " & String.Format("{0:n0}", po) & "," & sf & "," & td & " asteroid field," & dd & "," & md & ", and" & od & ".</p>" _
-                    & Environment.NewLine & Environment.NewLine & "<p>" & de & "</p>"
-
-            End If
-            Application.DoEvents()
-
-        Next
-
-        Dim Wsettings As XmlWriterSettings = New XmlWriterSettings()
-        Wsettings.Indent = True
-        Wsettings.IndentChars = (ControlChars.Tab)
-        Wsettings.ConformanceLevel = ConformanceLevel.Document
-        Wsettings.WriteEndDocumentOnClose = True
         Dim writer As XmlWriter = XmlWriter.Create(My.Application.Info.DirectoryPath & "\Planets\planets.xml", Wsettings)
         serial.Serialize(writer, p)
         writer.Flush()
         writer.Close()
 
     End Sub
-
-
 
     Private Function getSC() As String
 
