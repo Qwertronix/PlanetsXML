@@ -51,6 +51,7 @@ Class ObjPlanets
 
             'Somehow check if EPlanets has an <event> with an id() matching planet.name()
             'If so then move <event> tags into that object, else create a new <event><id>planet.name()</id></event>
+            Dim eventObj As EPlanet() = Array.FindAll(Of EPlanet)(e.EPlanetArray, Function(item) item.id = planet.name)
 
             'If planet already has lore
             If String.IsNullOrEmpty(planet.desc()) = False Then
