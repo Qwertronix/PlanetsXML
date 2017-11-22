@@ -10794,10 +10794,10 @@ During the Golden Age of Peace, Basalt‘s mining companies recovered enough to 
         <id>Baxley</id>
         <name>Baxley</name>
         <sysPos>3</sysPos>
-        <spectralType>K5IV</spectralType>
+        <spectralType>K5V</spectralType>
         <spectralClass>K</spectralClass>
         <subtype>5.0</subtype>
-        <luminosity>IV</luminosity>
+        <luminosity>V</luminosity>
         <nadirCharge>false</nadirCharge>
         <zenithCharge>false</zenithCharge>
         <lifeForm>REPTILE</lifeForm>
@@ -24901,7 +24901,7 @@ After suffering at the hands of the Combine for decades, the people of Csesztreg
         <nadirCharge>false</nadirCharge>
         <zenithCharge>false</zenithCharge>
         <pop>-1</pop>
-        <faction>UND</faction>
+        <faction>NONE</faction>
         <desc>This star does not have any planets.</desc>
     </planet>
     <planet>
@@ -26562,7 +26562,7 @@ During the First Succession War, the Draconis Combine used over a dozen 100-mega
         <ycood>424.06</ycood>
         <id>Dark Nebula</id>
         <name>Dark Nebula</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>spacestation</className>
         <sysPos>15</sysPos>
         <spectralType>K8V</spectralType>
         <spectralClass>K</spectralClass>
@@ -84731,7 +84731,7 @@ Magna Metals Incorporated</desc>
         <ycood>326.975</ycood>
         <id>Rest Stop</id>
         <name>Rest Stop</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>spacestation</className>
         <spectralType>M9III</spectralType>
         <spectralClass>M</spectralClass>
         <subtype>9.0</subtype>
@@ -93802,10 +93802,6 @@ The planet Somerset is best known for two things, first as the location of the A
             <date>3071-07-13</date>
             <faction>CJF</faction>
         </event>
-        <event>
-            <date>23785-01-01</date>
-            <faction>RWR</faction>
-        </event>
     </planet>
     <planet>
         <xcood>-421.047</xcood>
@@ -95025,7 +95021,7 @@ Tengo Aerospace</desc>
         <ycood>432.154</ycood>
         <id>Star's End (Novo Cressidas)</id>
         <name>Star's End (Novo Cressidas)</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>asteroidfield</className>
         <sysPos>2</sysPos>
         <spectralType>M5V</spectralType>
         <spectralClass>M</spectralClass>
@@ -99970,9 +99966,9 @@ Taurus is home to a number of military industries and academies. Magna Metals is
         <id>Terra</id>
         <name>Terra</name>
         <sysPos>3</sysPos>
-        <spectralType>G9V</spectralType>
+        <spectralType>G2V</spectralType>
         <spectralClass>G</spectralClass>
-        <subtype>9.0</subtype>
+        <subtype>2.0</subtype>
         <luminosity>V</luminosity>
         <orbitRadius>1.00000011</orbitRadius>
         <orbitEccentricity>0.0167086</orbitEccentricity>
@@ -99998,7 +99994,7 @@ Taurus is home to a number of military industries and academies. Magna Metals is
         <pressureAtm>1.0</pressureAtm>
         <atmMass>1.0</atmMass>
         <albedo>0.33</albedo>
-        <greenhouse>0.12</greenhouse>
+        <greenhouse>1.0</greenhouse>
         <temperature>30</temperature>
         <climate>TEMPERATE</climate>
         <lifeForm>MAMMAL</lifeForm>
@@ -101413,8 +101409,8 @@ Earthwerks Incorporated</desc>
         <id>Tigress</id>
         <name>Tigress</name>
         <sysPos>4</sysPos>
-        <spectralType>?7V</spectralType>
-        <spectralClass>?</spectralClass>
+        <spectralType>G7V</spectralType>
+        <spectralClass>G</spectralClass>
         <subtype>7.0</subtype>
         <luminosity>V</luminosity>
         <satellite>Jarvic</satellite>
@@ -102713,7 +102709,7 @@ Vengeance Incorporated</desc>
         <ycood>669.005</ycood>
         <id>Transfer Facility 4</id>
         <name>Transfer Facility 4</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>spacestation</className>
         <spectralType>M4II</spectralType>
         <spectralClass>M</spectralClass>
         <subtype>4.0</subtype>
@@ -102743,7 +102739,7 @@ Vengeance Incorporated</desc>
         <ycood>612.206</ycood>
         <id>Transfer Station J239H2</id>
         <name>Transfer Station J239H2</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>spacestation</className>
         <spectralType>K7V</spectralType>
         <spectralClass>K</spectralClass>
         <subtype>7.0</subtype>
@@ -102765,7 +102761,7 @@ Vengeance Incorporated</desc>
         <ycood>885.647</ycood>
         <id>Transfer Station P3</id>
         <name>Transfer Station P3</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>spacestation</className>
         <spectralType>K2V</spectralType>
         <spectralClass>K</spectralClass>
         <subtype>2.0</subtype>
@@ -102791,7 +102787,7 @@ Vengeance Incorporated</desc>
         <ycood>1037.657</ycood>
         <id>Transfer Station P9</id>
         <name>Transfer Station P9</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>spacestation</className>
         <spectralType>G3II</spectralType>
         <spectralClass>G</spectralClass>
         <subtype>3.0</subtype>
@@ -109974,7 +109970,7 @@ Presently, aside from the Games and the Hiring Hall, Westerhand does not feature
         <ycood>683.813</ycood>
         <id>Wolf Orbital 82</id>
         <name>Wolf Orbital 82</name>
-        <PlanetType>spacestation</PlanetType>
+        <className>spacestation</className>
         <spectralType>G6IV</spectralType>
         <spectralClass>G</spectralClass>
         <subtype>6.0</subtype>

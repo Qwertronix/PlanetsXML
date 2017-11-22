@@ -22,7 +22,7 @@ Partial Class PlanetsXML
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.btnOK = New System.Windows.Forms.Button()
+        Me.btnWrite = New System.Windows.Forms.Button()
         Me.txtAxis = New System.Windows.Forms.TextBox()
         Me.cbPlanets = New System.Windows.Forms.ComboBox()
         Me.txtOrbit = New System.Windows.Forms.TextBox()
@@ -38,16 +38,17 @@ Partial Class PlanetsXML
         Me.lblpercentWater = New System.Windows.Forms.Label()
         Me.lblTemperature = New System.Windows.Forms.Label()
         Me.lblMoon = New System.Windows.Forms.Label()
+        Me.btnGen = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
-        'btnOK
+        'btnWrite
         '
-        Me.btnOK.Location = New System.Drawing.Point(13, 398)
-        Me.btnOK.Name = "btnOK"
-        Me.btnOK.Size = New System.Drawing.Size(75, 23)
-        Me.btnOK.TabIndex = 0
-        Me.btnOK.Text = "&Ok"
-        Me.btnOK.UseVisualStyleBackColor = True
+        Me.btnWrite.Location = New System.Drawing.Point(118, 398)
+        Me.btnWrite.Name = "btnWrite"
+        Me.btnWrite.Size = New System.Drawing.Size(100, 25)
+        Me.btnWrite.TabIndex = 0
+        Me.btnWrite.Text = "&Write"
+        Me.btnWrite.UseVisualStyleBackColor = True
         '
         'txtAxis
         '
@@ -177,11 +178,21 @@ Partial Class PlanetsXML
         Me.lblMoon.TabIndex = 15
         Me.lblMoon.Text = "Moon(s)"
         '
-        'XMLTest
+        'btnGen
+        '
+        Me.btnGen.Location = New System.Drawing.Point(12, 398)
+        Me.btnGen.Name = "btnGen"
+        Me.btnGen.Size = New System.Drawing.Size(100, 25)
+        Me.btnGen.TabIndex = 16
+        Me.btnGen.Text = "&Generate"
+        Me.btnGen.UseVisualStyleBackColor = True
+        '
+        'PlanetsXML
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(622, 433)
+        Me.Controls.Add(Me.btnGen)
         Me.Controls.Add(Me.lblMoon)
         Me.Controls.Add(Me.lblTemperature)
         Me.Controls.Add(Me.lblpercentWater)
@@ -197,7 +208,7 @@ Partial Class PlanetsXML
         Me.Controls.Add(Me.txtOrbit)
         Me.Controls.Add(Me.cbPlanets)
         Me.Controls.Add(Me.txtAxis)
-        Me.Controls.Add(Me.btnOK)
+        Me.Controls.Add(Me.btnWrite)
         Me.Name = "PlanetsXML"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "PlanetsXML"
@@ -206,7 +217,7 @@ Partial Class PlanetsXML
 
     End Sub
 
-    Friend WithEvents btnOK As Button
+    Friend WithEvents btnWrite As Button
     Friend WithEvents txtAxis As TextBox
     Friend WithEvents cbPlanets As ComboBox
     Friend WithEvents txtOrbit As TextBox
@@ -222,4 +233,5 @@ Partial Class PlanetsXML
     Friend WithEvents lblpercentWater As Label
     Friend WithEvents lblTemperature As Label
     Friend WithEvents lblMoon As Label
+    Friend WithEvents btnGen As Button
 End Class

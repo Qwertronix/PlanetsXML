@@ -10,7 +10,7 @@ Public Class NameTable
         Dim row As DataRow
 
         table.Columns.Add("Name", GetType(String))
-        table.Columns.Add("Language", GetType(Integer))
+        table.Columns.Add("Language", GetType(Short))
 
         Do
 
