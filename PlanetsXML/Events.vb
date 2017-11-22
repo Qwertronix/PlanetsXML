@@ -7,7 +7,7 @@ XmlRoot("planets", IsNullable:=False)>
 Partial Public Class EPlanets
 
     <XmlElement("planet")>
-    Public Property EPlanet() As EPlanet()
+    Public Property EPlanetArray As EPlanet()
 
 End Class
 
