@@ -37,6 +37,13 @@ Partial Public Class EPlanet
     <XmlElement("event")>
     Public Property [event]() As Eevent()
 
+    Public Shared Widening Operator CType(obj As EPlanet) As Planet
+        Return New Planet With {
+            .name = obj.id,
+            .Pevent = obj.event.Cast(Of Pevent).ToArray()
+        }
+    End Operator
+
 End Class
 
 <Serializable,
@@ -58,6 +65,13 @@ Partial Public Class Eevent
             Throw New ArgumentException("Object is not an Event")
         End If
     End Function
+
+    Public Shared Narrowing Operator CType(obj As Eevent) As Pevent
+        Return New Pevent With {
+            .date = obj.date,
+            .faction = obj.faction
+        }
+    End Operator
 
     <XmlElement(DataType:="date")>
     Public Property [date]() As Date

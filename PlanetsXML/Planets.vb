@@ -1,4 +1,5 @@
 ﻿Imports System.Xml.Serialization
+Imports PlanetsXML
 
 <Serializable,
  ComponentModel.DesignerCategory("planets"),
@@ -16,7 +17,7 @@ End Class
  XmlType(AnonymousType:=True),
  XmlRoot("planet", IsNullable:=False)>
 Partial Public Class Planet
-    Implements IComparable
+    Implements IComparable, IEquatable(Of Planet)
 
     Public Overloads Function CompareTo(ByVal obj As Object) As Integer _
         Implements IComparable.CompareTo
@@ -391,6 +392,16 @@ Partial Public Class Planet
 
     End Function
 
+    Public Overrides Function Equals(obj As Object) As Boolean
+        Return Equals(TryCast(obj, Planet))
+    End Function
+
+    Public Overloads Function Equals(other As Planet) As Boolean Implements IEquatable(Of Planet).Equals
+        Return other IsNot Nothing AndAlso
+               name = other.name AndAlso
+               id = other.id
+    End Function
+
     <XmlElement("faction")>
     Public Property faction() As String
 
@@ -409,6 +420,20 @@ Partial Public Class Planet
     <XmlElement("event")>
     Public Property Pevent() As Pevent()
 
+    Public Shared Operator =(planet1 As Planet, planet2 As Planet) As Boolean
+        Return EqualityComparer(Of Planet).Default.Equals(planet1, planet2)
+    End Operator
+
+    Public Shared Operator <>(planet1 As Planet, planet2 As Planet) As Boolean
+        Return Not planet1 = planet2
+    End Operator
+
+    Public Shared Narrowing Operator CType(obj As Planet) As EPlanet
+        Return New EPlanet With {
+            .id = obj.name,
+            .event = obj.Pevent.Cast(Of Eevent).ToArray()
+        }
+    End Operator
 End Class
 
 <Serializable,
@@ -422,5 +447,12 @@ Partial Public Class Pevent
 
     <XmlElement("faction")>
     Public Property faction() As String
+
+    Public Shared Widening Operator CType(obj As Pevent) As Eevent
+        Return New Eevent With {
+            .date = obj.date,
+            .faction = obj.faction
+        }
+    End Operator
 
 End Class
