@@ -1,7 +1,7 @@
 ﻿Imports System.Xml
 Imports System.Xml.Serialization
 
-Class objPlanets
+Class ObjPlanets
 
     Const G As Single = 6.67 * (10 ^ -11)
     Const Rstd As Single = 6.3781 * (10 ^ 6) 'km
@@ -40,11 +40,12 @@ Class objPlanets
         End While
         Ereader.Close()
 
-        Dim Wsettings As XmlWriterSettings = New XmlWriterSettings()
-        Wsettings.Indent = True
-        Wsettings.IndentChars = (ControlChars.Tab)
-        Wsettings.ConformanceLevel = ConformanceLevel.Document
-        Wsettings.WriteEndDocumentOnClose = True
+        Dim Wsettings As XmlWriterSettings = New XmlWriterSettings With {
+            .Indent = True,
+            .IndentChars = (ControlChars.Tab),
+            .ConformanceLevel = ConformanceLevel.Document,
+            .WriteEndDocumentOnClose = True
+        }
 
         For Each planet In p.planet()
 
@@ -2946,19 +2947,19 @@ Class objPlanets
 
         Select Case r
 
-                Case 1 To 3
+            Case 1 To 3
 
-                    Return "occupied"
+                Return "occupied"
 
-                Case 4 To 6
+            Case 4 To 6
 
-                    Return "abandoned"
+                Return "abandoned"
 
-                Case Else
+            Case Else
 
-                    Return "error"
+                Return "error"
 
-            End Select
+        End Select
 
     End Function
 
