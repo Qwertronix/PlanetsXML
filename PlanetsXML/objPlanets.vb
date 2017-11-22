@@ -53,6 +53,17 @@ Class ObjPlanets
             'If so then move <event> tags into that object, else create a new <event><id>planet.name()</id></event>
             Dim eventObj As EPlanet() = Array.FindAll(Of EPlanet)(e.EPlanetArray, Function(item) item.id = planet.name)
 
+            If eventObj.Count > 1 Then
+                '' Handle when events file already has the Planet more than once (error? merge?)
+            ElseIf eventObj.Count > 0 Then
+                '' we got one, put the current planet data in it
+                If eventObj(0).event.Count > 0 Then
+                    eventObj(0).event = eventObj(0).event.Concat(planet.Pevent.Cast(Of Eevent).ToArray()).ToArray()
+                Else
+                    eventObj(0) = CType(planet, EPlanet)
+                End If
+            End If
+
             'If planet already has lore
             If String.IsNullOrEmpty(planet.desc()) = False Then
                 Console.WriteLine(planet.name() & " has lore")
